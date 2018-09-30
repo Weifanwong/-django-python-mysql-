@@ -1,0 +1,100 @@
+1、python、django以及mysql之间的关系
+
+python：语言，实现模版、url等文件的基础
+djang框架：用户利用django内置的各种函数可以方便的请求对数据库中数据的各种操作，可以说django是用户与数据库之间的桥梁。在此大概将web前后端的工作流程
+回顾一下：  首先用户通过向浏览器输入特定的域名（http请求），Django 作为一个Web 框架，它接收浏览器发来的 HTTP 请求后，便协助服务器开始进行相关处理
+操作，并将出后的结果再次封装成一个http响应，最终传给浏览器，浏览器通过解析该响应展现出预先的效果。
+常用的django指令:
+python manage.py startproject ...
+python manage.py startapp ...
+python manage.py makemigrations
+python manage.py migrate
+python manage.py shell
+python manage.py runserver
+可以看出，在django的协助下，我们可以运行服务器、更新迁移数据库、甚至创建一个新的本地服务器去存放新的项目与应用。
+mysql：数据库，用于存放表、数据，与服务器交互对指定数据执行操作
+
+2、博客的基本功能与进阶功能
+基本功能：基本的UI设计，展示博主的基本信息、文章列表、文章分类、文章作者、标签、摘要、文章的创建修改日期、版权等
+进阶功能：评论、博客搜索等
+
+3、搭建基本的博客框架
+首先要基于python+django+mysql搭建一个基本的博客框架。假设三者全部都已经安装完毕
+（1）创建一个用来存放数据的数据库
+打开终端输入 
+/usr/local/mysql/bin/mysql -u root -p 
+登陆mysql数据库，创建用于该博客的数据库：
+create datebase myblog;
+（2）创建博客工程
+退出mysql，在合适的路径下创建工程：
+python manage.py startproject blogproject
+进入该目录，并创建第一个blog应用:
+python manage.py startapp blog
+此时介绍一下自动产生的各文件的作用：
+blogproject/blogproject/settings.py 配置文件，指定工程的路径、对应的数据库、拥有的app、拥有的模版等
+blogproject/blogproject/urls.py 用于指定（绑定）url，告诉浏览器在哪个域名上执行哪个视图函数或模版（html）
+blogproject/blogproject/models.py 创建blog app下的各类模型，这些模型组成了最后的博客。
+blogproject/blogproject/admin.py 用于将创建的模型与admin账户绑定，使用户能从admin界面控制管理模型
+blogproject/blogproject/views.py 用于直接返回http响应，或者通过指定模版（html），将模版中的数据包装成http响应
+blogproject/blogproject/urls.py 作用同上，为了防止混淆，通常将博客下用到的html模版在该url文件中指定
+（3）将博客工程与数据库绑定：
+打开blogporject下的setting，将database中各项都指向先前创建的myblog数据库，另外将blog应用添加到app中
+DATABASES = {
+    'default': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'myblog',
+    'USER': 'root',
+    'PASSWORD': '1q2w3e4r',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
+    }
+}
+
+（4）修改blogproject与blog下的url文件：
+#blogproject/blogproject/views.py
+from django.contrib import admin
+from django.conf.urls import url,include
+urlpatterns = [
+	url('admin/',admin.site.urls),
+	url('',include('blog.urls'))
+]
+其中url('admin/',admin.site.urls) 绑定了管理员界面，通过输入127.0.0.1：8000/admin后便可进入
+而url('',include('blog.urls')) 将url进一步传递给blog目录下的url文件：
+#blogproject/blog/urls.py
+from . import views 
+from django.conf.urls import url
+urlpatterns =[
+url(r'^$',views.index),
+url(r'^2',views.index2),
+]
+其中url(r'^$',views.index)表示绑定默认域名127.0.0.1：8000，在该页执行views中的index函数
+url(r'^2',views.index2)表示绑定127.0.0.1：8000/2/， 在该页执行views中的index2函数
+
+（5）views视图函数是MVC（model、view、control）模式中view（视图）的“门”，通过该文件我们找到相应的模版Template从而实现数据的可视化操作：
+#blogproject/blog/views.py
+from django.shortcuts import render,HttpResponse
+def index(request):
+	return HttpResponse('hello')
+def index2(request):
+	return render(request,'index.html')
+我们甚至可以通过view中的函数直接返回一个http响应：	return HttpResponse('hello')
+
+（6）编写模版html
+在blogproject目录下创建templates文件夹，在该文件中创建模版（html）
+#templates/index.html
+<p>helloworld!</p>
+
+可以发现4～6三步是步步相关的，从浏览器的域名请求一直贯穿到了http响应的包装与返回
+至此，基本的框架就部署完了，可以打开终端在博客根目录下输入：
+python manage.py runserver
+在浏览器中输入127.0.0.1:8000 若出现django的成功响应，则说明搭建成功。
+后期我们要做的就是完善html模版文件，让我们的博客实现各种各样的功能。
+
+
+
+
+
+
+
+
+
