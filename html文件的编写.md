@@ -1,17 +1,17 @@
 接着昨天的步骤，最基本的博客框架已经搭建好了，接下来就是html模板文件的编写，通过编写html文件，向用户展现各种各样的页面以及功能。
 先实现一个基本的显示模板：
 #blogproject2/templates/index.html
-<html>
-<head>   <!--定义一些路径属性、题目-->
-	<title>myblog</title>
-</head>
-<body>
-	<h1>我的第一篇博客<h1>
-		<p>今天很高兴，写了一篇博客</p>
-	<h1>我的第二篇博客</h1>
-		<p>今天也很高兴，又写了一篇博客</p>
-</body>
-</html>
+#<html>
+#<head>   <!--定义一些路径属性、题目-->
+#	<title>myblog</title>
+#</head>
+#<body>
+#	<h1>我的第一篇博客<h1>
+#		<p>今天很高兴，写了一篇博客</p>
+#	<h1>我的第二篇博客</h1>
+#		<p>今天也很高兴，又写了一篇博客</p>
+#</body>
+#</html>
 运行服务器，可以看到浏览器中出现了基本的几行字。
 但目前我们做的只是一个“纸老虎”，它没有真正的与数据库中的文章等互通，也满足不了任何用户的要求。接下来的几天，将逐步学习html、js、css的应用，使我们的博客有越来越多的
 应用与更完善的UI。
@@ -19,37 +19,37 @@
 作为一个博客，首先要能显示博文的标签、种类、以及博客目录，并且通过目录要能够查看博客详细内容。
 首先实现博客的目录功能，把数据库中的博客题目与基本信息罗列在页面上:
 #blogproject2/templates/index.html
-<html>
-<head>   <!--定义一些路径属性、题目-->
-	<title>myblog</title>
-</head>
-<body>
-	<h1>博客目录<h1>
-		{% for post in post_list %}
-		<p>题目：{{post.title}}</p>
-		<p>作者：{{post.author}}</p>
-		<p>更新时间：{{post.created_time}}</p>
-		<p>类别：{{post.category}}</p>
-		<p>标签：{{post.tags}}</p>
-		<p>正文：{{post.body}}</p>
-		{% endfor %}
-</body>
-</html>
+#<html>
+#<head>   <!--定义一些路径属性、题目-->
+#	<title>myblog</title>
+#</head>
+#<body>
+#	<h1>博客目录<h1>
+#		{% for post in post_list %}
+#		<p>题目：{{post.title}}</p>
+#		<p>作者：{{post.author}}</p>
+#		<p>更新时间：{{post.created_time}}</p>
+#		<p>类别：{{post.category}}</p>
+#		<p>标签：{{post.tags}}</p>
+#		<p>正文：{{post.body}}</p>
+#		{% endfor %}
+#</body>
+#</html>
 此时可以看到只是丑陋的将数据库中的博客数据通过循环的方式粗暴的显示到了网站上。能不能好看点？至少让文章的各项属性调理一点吧？
-<html>
-<head>   <!--定义一些路径属性、题目-->
-	<title>myblog</title>
-</head>
-<body>
-	<h1>博客目录<h1>
-		{% for post in post_list %}
-		<h1>题目：{{post.title}}</h1>
-		<div>
-			<p>作者：{{post.author}} 更新时间：{{post.created_time}} 类别：{{post.category}} 标签：{{post.tags}}</p>
-		</div>
-		<p>正文：{{post.body}}</p>
-		{% endfor %}
-</body>
-</html>
+#<html>
+#<head>   <!--定义一些路径属性、题目-->
+#	<title>myblog</title>
+#</head>
+#<body>
+#	<h1>博客目录<h1>
+#		{% for post in post_list %}
+#		<h1>题目：{{post.title}}</h1>
+#		<div>
+#			<p>作者：{{post.author}} 更新时间：{{post.created_time}} 类别：{{post.category}} 标签：{{post.tags}}</p>
+#		</div>
+#		<p>正文：{{post.body}}</p>
+#		{% endfor %}
+#</body>
+#</html>
 ![image]https://github.com/Weifanwong/-django-python-mysql-/blob/master/WechatIMG320.png
 可见这里<div>标签的作用是使包含在它里面的内容显示等级向下走一级。时间关系今天先到这里！
