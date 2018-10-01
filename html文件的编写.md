@@ -51,5 +51,5 @@
 		{% endfor %}
 </body>
 </html>
-!https://github.com/Weifanwong/-django-python-mysql-/blob/master/WechatIMG320.png
+![imag]https://github.com/Weifanwong/-django-python-mysql-/blob/master/WechatIMG320.png
 可见这里<div>标签的作用是使包含在它里面的内容显示等级向下走一级。时间关系今天先到这里！
