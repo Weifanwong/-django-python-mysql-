@@ -1,0 +1,79 @@
+昨天实现了在浏览器中列出数据库中的各项数据。
+但合格的博客不应该是这么简陋且只有单一界面的，它应该有美观的界面，以及合适的超链接。今天就在昨天的基础上，将列出的博客列表用CSS渲染，使得标题、作者
+等元素能够美观的显示在浏览器中，具体要求：
+1、将博客的标题、作者、日期、标签、分类放在类似表格的结构中，给表格加一个温和的背景。
+2、并且加入合适的超链接（点击文章标题才会出现正文）。
+3、给整个博客整体加入一个合适的背景。
+
+首先我们将文章除正文之外的属性合适的表示在页面中，标题居中加粗，并且设置为我们喜欢的红色，其他属性在标题下方居中,设置为蓝色。
+<html>
+<head>   <!--定义一些路径属性、题目-->
+	<title>myblog</title>
+	<style>
+.head_center
+{
+	text-align:center;
+	color:red;
+}
+.attribute_center
+{
+	text-align:center;
+	color:blue;
+}
+	</style>
+</head>
+
+<body>
+	<h1>博客目录<h1>
+		{% for post in post_list %}
+		<h2 class = "head_center">题目：{{post.title}}</h1>
+		<div class = "attribute_center">
+			<p>作者：{{post.author}} 更新时间：{{post.created_time}} 类别：{{post.category}} 标签：{{post.tags}}</p>
+		</div>
+		<p>正文：{{post.body}}</p>
+		{% endfor %}
+</body>
+</html>
+runserver看一下效果，可见达到了我们预期的效果！
+![image]
+      -django-python-mysql-/WechatIMG321.png
+接下来我们说，这个博客的背景不能就这么白白的，需要给它加一个漂亮的背景：
+在<style>中加入：
+.background_imag
+{
+	background-image: url("https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&s
+  ize=b4000_4000&sec=1538481059&di=64419f5b7e5cb463d118fae8fb25e36c&src=http://s1.sinaimg.cn/orignal/4ba852338a32f84cf5720")
+}
+url中是图片的地址。
+另外在<body>标签中需要更改为<body class = "backgound_imag">
+![image]https://github.com/Weifanwong/-django-python-mysql-/blob/master/WechatIMG322.png?raw=true
+如果我们不希望正文直接出现在首页，而是希望在我们点击博客的题目之后再出现，我们就需要用到“链接”，因此我们需要再写一个detail.html文件来显示我们的正文。
+这里要用到模板的继承，先写一个公共的模板base.html
+<html>
+<head>   <!--定义一些路径属性、题目-->
+	<title>myblog</title>
+	<style>
+.head_center
+{
+	text-align:center;
+	color:red;
+}
+.attribute_center
+{
+	text-align:center;
+	color:blue;
+}
+.background_imag
+{
+	background-image: url("https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1538481059&di=64419f5b7e5cb463d118fae8fb25e36c&src=http://s1.sinaimg.cn/orignal/4ba852338a32f84cf5720")
+}
+	</style>
+</head>
+
+<body class="background_imag">
+	{% block body %}
+	{% endblock body %}
+</body>
+</html>
+
+
