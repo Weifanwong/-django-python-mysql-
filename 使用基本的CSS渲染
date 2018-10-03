@@ -34,21 +34,26 @@
 		{% endfor %}
 </body>
 </html>
+
 runserver看一下效果，可见达到了我们预期的效果！
-![image]
-      -django-python-mysql-/WechatIMG321.png
+![image]-django-python-mysql-/WechatIMG321.png
+
 接下来我们说，这个博客的背景不能就这么白白的，需要给它加一个漂亮的背景：
+
 在<style>中加入：
 .background_imag
 {
 	background-image: url("https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&s
   ize=b4000_4000&sec=1538481059&di=64419f5b7e5cb463d118fae8fb25e36c&src=http://s1.sinaimg.cn/orignal/4ba852338a32f84cf5720")
 }
+
 url中是图片的地址。
 另外在<body>标签中需要更改为<body class = "backgound_imag">
 ![image]https://github.com/Weifanwong/-django-python-mysql-/blob/master/WechatIMG322.png?raw=true
+
 如果我们不希望正文直接出现在首页，而是希望在我们点击博客的题目之后再出现，我们就需要用到“链接”，因此我们需要再写一个detail.html文件来显示我们的正文。
 这里要用到模板的继承，先写一个公共的模板base.html
+
 #/templates/base.html
 <html>
 <head>   <!--定义一些路径属性、题目-->
@@ -83,13 +88,17 @@ url中是图片的地址。
 看到对应博客的正文，这样我们就需要在题目上加一个链接属性。此处我们利用{{post.get_absolute_url}}，get_absolute_url是定义在models.py中post类下
 的一个函数，它能够返回对应博客的url地址。因此当调用post.get_absolute_url的时候，我们就调出了该url对应的博客。
 该url是怎么生成的呢？我们知道之前都是通过blog目录下的urls.py文件指定视图函数对应的url地址的。因此我们要在该文件下再加一个url函数：
+
 url(r'^post/(?P<pk>[0-9]+)/$',views.detail,name='detail'),
-该url地址的具体形式实际上是：http://127.0.0.1:8000/post/*/  
-*代表博客对应的id（pk）。此时我们回顾一下detail（正文）页面的打开流程：
+
+该url地址的具体形式实际上是：http://127.0.0.1:8000/post/*/  *代表博客对应的id（pk）。
+
+我们回顾一下detail（正文）页面的打开流程：
 首先我们在urls.py中定义了每篇博文的url地址形式，当用户点击首页题目，该行为会调用get_absolute_url函数，返回点击题目对应文章的url（包含pk）给浏览器
-，此时
-urls.py中的url函数从浏览器的url地址中抓取post后面的值pk，并传给views.detail视图函数。，detail函数利用接收到的pk值从数据库中查找到对应的文章，
+，此时urls.py中的url函数从浏览器的url地址中抓取post后面的值pk，并传给views.detail视图函数。，detail函数利用接收到的pk值从数据库中查找到对应的文章，
 最后修改html文件并将其包装成http响应返回给浏览器。
+
+根据上述流程我们作出对index.html的修改：
 <body class="background_imag">
 	{% block body %}
 	<h1>博客目录<h1>
