@@ -1,0 +1,149 @@
+目前我们的首页还是非常丑陋的，它仅仅有基本的显示博客的功能。接下来利用css对博客首页进行进一步的功能和界面的完善
+
+本期内容：给博客首页加一些功能键：首页、个人档、最新文章、标签、分类，并实现搜索，具体要求如下：
+“首页”与“个人档”形成导航栏，点击“首页”返回博客首页，最新文章栏目按创建文章顺序显示文章，标签栏显示tag以及各tag下面的文章数，搜索后可以返回文章处正文之外的基本信息，并且通过点击题目
+可以查看正文。
+
+点击“首页”返回博客首页：
+很简单，直接在base.html的<style>块中加入合适的css代码。
+ul
+{
+	margin:0;
+	padding:0;
+	width: 15%;
+	background-color: #f1f1f1;  
+	padding-top:6px;
+	padding-bottom:6px;
+	height: 10%;  /*整个导航栏的长*/
+
+}
+
+li a {
+    display: block;
+    color: #000;   /*字体颜色*/
+    padding: 8px 16px;
+    text-decoration: none;
+}
+ 
+li a:hover
+{
+	background-color:#111;  /*表示鼠标位于上方时背景的颜色*/
+	color: white;   /*表示鼠标位于上方时字体的颜色*/
+}
+
+此时发现博客内容的排版很混乱，可以讲该结果看作是设计流程的失误，在前端设计的时候，弄明白客户需求之后，应该尽快确认每一个网页模版上显示内容的排布方式，导航栏在哪儿、文章目录在哪儿、
+标题在哪儿等等。因此这里使用css网络视图来规划布局如下：
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+分别指占浏览器的相对列比
+
+此处我们将网站的题目放在左上方，导航设置在屏幕最左端、网站题目之下。博客目录放在其下，而网页最右端显示最新文章、标签分类等等。
+
+题目： 此处padding用来设置内容content与边界boder之间的距离
+.blog_head
+{
+	padding: 20px;
+}
+...
+<h1 class = "blog_head">王伟帆的博客！</h1>
+
+导航：采用水平导航栏，占50%屏幕列比。导航栏一般通过<ul><li>元素组合来实现:
+#/base.html
+ul
+{
+	list-style-type: none; 
+	margin:0;
+	padding:0;
+	width: 50%;  /*注意，这里占的是col-12的50%*/
+	background-color: #f1f1f1;
+	overflow: hidden;
+	border: 1px solid:#e7e7e7;
+
+}
+/**/
+
+li a {
+    display: block;
+    color: #000;
+    text-align: center;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+ 
+li a:hover
+{
+	background-color:#111;  /*表示鼠标位于上方时背景的颜色*/
+	color: white;   /*表示鼠标位于上方时字体的颜色*/
+}
+
+li
+{
+	float: left;
+}
+
+<div class = "col-12">
+	<ul>
+		<li><a href = "http://127.0.0.1:8000">首页</a></li>
+		<li><a href = "">个人档</a></li>
+	</ul>
+	</div>
+ 
+而博客目录：
+#index.html
+	<div class = "col-7"> 
+	<h1>博客目录<h1>
+		{% for post in post_list %}
+		<h2 class = "head_center">
+			<a href = "{{post.get_absolute_url}}">题目：{{post.title}}</a>
+		</h1>
+		<div class = "attribute_center">
+			<p>作者：{{post.author}} 更新时间：{{post.created_time}} 类别：{{post.category}} 标签：{{post.tags}}</p>
+		</div>
+		<br><br><br><br>
+		{% endfor %}
+	</div>
+
+在博客目录的右边要有文章分类与最新文章，这里用表格来实现，注意同一行col-x的和不要超过12：
+<div class = "col-4"> 
+		<table = >
+			<tr>
+				<th>最新文章</th>
+			</tr>
+			{% for post in post_list %}
+			<tr>
+				<td ><a href = "{{post.get_absolute_url}}">{{post.title}}</a></td>
+			</tr>
+				{% endfor %}
+		</table>
+		<br><br><br>
+		<table>
+			<tr>
+				<th>分类</th>
+			</tr>
+			{% for category in category_list %}
+			<tr>
+				<td><a href ="#">{{category.name}}({{category.num_posts}})</td>
+			</tr>
+				{% endfor %}
+		</table>
+
+	</div>			
+  
+  另外要注意一点特定分类下文章的数量的显示，需要在视图函数index中定义cate_list变量，同时利用annotate给其加一个num_posts参数列，
+  表示特定种类的博客数量，最后传送给html模版文件：
+  #views.py
+  def index2(request):
+	post_list = Post.objects.all().order_by('created_time')
+	category_list = Category.objects.annotate(num_posts=Count('post'))
+	return render(request,'index.html',{'post_list':post_list,'category_list':category_list})
+
