@@ -1,0 +1,23 @@
+今天我们的任务是，改善博客的背景、改变文字字体，并将个人档案完善。要求个人档中表格显示博主的照片、姓名、email以及住址
+
+首先选择一个好看一点的背景，并在base.html中更改background_image的url地址
+改变文字字体利用：
+font-family: "Times New Roman",Times,serif;
+该句的意思是一个备选的方案，若浏览器不支持前面的字体就选用后面的字体。
+
+个人档案的完善就涉及到新的html模版的编写。
+同样继承base.html，然后在views函数中增加mybiology函数：
+def biology(request):
+	return render(request,'biology.html')
+  
+然后将blog下的urls.py进行改写，增加以下url：
+url(r'^my_biology',views.biology)
+
+最后在base.html的个人档上添加链接：
+<li><a href = "my_biology">个人档</a></li>
+
+接下来就可以编写mybiology.html页面了
+首先吸取之前的教训，我们先对页面进行一个大致的排版，我希望在导航栏下有一个大的框架，合适大小的照片在左上角，照片下是我的姓名、联系方式
+以及住址。在照片的右方依次是我的兴趣爱好、教育经历等等。
+
+时间关系，可能添加本地图片需要用到javascript，因此次日再学习！
