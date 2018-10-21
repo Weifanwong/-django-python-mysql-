@@ -1,0 +1,68 @@
+django已开发包Paginator具有分页功能
+此处利用在其基础上开发的另一个包：django-pure-pagination
+官方文档：https://github.com/jamespacileo/django-pure-pagination
+
+
+首先安装该modual：
+pip install django-pure-pagination
+然后在setting文件中设置：
+INSTALLED_APPS = (
+    ...
+    'pure_pagination',
+)
+
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 3,    #中间显示的个数
+    'MARGIN_PAGES_DISPLAYED': 2,  #两边显示的个数
+
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+}
+
+这里的3和2可以稍后自己去试一试是什么意思
+
+接下来就要去views.py中去实现分页函数，此处先要引入相关模块：
+
+from pure_pagination import PageNotAnInteger,Paginator
+
+在之前写的index2()函数中加入：
+
+        try:
+            page = request.GET.get('page', 1)  #page就是指当前的页码
+        except PageNotAnInteger:
+            page = 1
+        p = Paginator(all_blog, 2, request=request)  #5为每页展示的博客数目
+        all_blog = p.page(page)
+        return render(request, 'index.html', {
+            'all_blog': all_blog,
+        })
+
+然后修改index.html，注意之前调用post时使用的for post in post_list要改为：for post in post_list.object_list
+然后加上以下分页模块：
+
+<div class="pagination">
+    {% if all_blog.has_previous %}
+        <a href="?{{ all_blog.previous_page_number.querystring }}",class="prev">&lsaquo;&lsaquo;上一页</a>
+    {% else %}
+        <span class="disabled prev">&lsaquo;&lsaquo;上一页</span>
+    {% endif %}
+
+    {% for page in all_blog.pages %}
+        {% if page %}
+            {% ifequal page all_blog.number %}
+                <span class="current page">{{ page }}</span>
+            {% else %}
+                <a href="?{{ page.querystring }}" class="page">{{ page }}</a>
+            {% endifequal %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+    {% if all_blog.has_next %}
+        <a href="?{{ all_blog.next_page_number.querystring }}" ,class="next">下一页&rsaquo;&rsaquo;</a>
+     {% else %}
+        <span class="disabled next",class="next">下一页&rsaquo;&rsaquo;</span>
+    {% endif %}
+</div>
+
+
+大功告成！
