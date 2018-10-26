@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+<html>
+<head>   <!--定义一些路径属性、题目-->
+	<title>myblog</title>
+	<style>
+	</style>
+</head>
+
+<body class="background_imag">
+	{% block body %}
+	<h1>正文</h1>
+        <div >
+            {{ post.body }}
+        </div>
+     {% endblock body %}
+</body>
+</html>
+
+
+

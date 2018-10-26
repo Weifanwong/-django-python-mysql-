@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+<html>
+<head>   <!--定义一些路径属性、题目-->
+	<title>myblog</title>
+	<style>
+
+	</style>
+</head>
+
+<body>
+	{% block body %}
+<div class ="col-12">
+	<div class = "col-8"> 
+
+		<div class = "row-10-5">
+		{% for post in post_list.object_list %}
+		<div class = "row-2-5">
+		<h2 class = "title_home">
+			<a href = "{{post.get_absolute_url}}",class="url_style">{{post.title}}</a>
+		</h2>
+
+		<div class = "abstract_home">
+			<a>{{post.excerpt}}</a>
+			<b>
+			<a href = "{{post.get_absolute_url}}" class= "readmore_home" >阅读全文</a>
+		</b>
+		</div>
+
+		<div class = "attribute_home">
+			<p>作者：{{post.author}} 更新时间：{{post.created_time}} 类别：{{post.category}} </p>
+		</div>
+	</div>
+		{% endfor %}
+	</div>
+
+	<div class = "row-1-5">
+	<nav class="pagination">
+    <div class="pageturn">
+        <ul class="pagelist">
+
+            {% if post_list.has_previous %}
+                <li class="long"><a href="?{{ post_list.previous_page_number.querystring }}">上一页</a></li>
+            {% endif %}
+
+            {% for page in post_list.pages %}
+            {% if page %}
+                {% ifequal page post_list.number %}
+                    <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                {% else %}
+                     <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                {% endifequal %}
+            {% else %}
+                <li class="none"><a href="">...</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if post_list.has_next %}
+                <li class="long"><a href="?{{ post_list.next_page_number.querystring }}">下一页</a></li>
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+</div>
+
+
+	</div>
+
+
+	
+
+
+	<div class = "col-4">
+
+	<div class = "left_menu">
+			
+			<h2 class = "title_menu">公告</h2>
+			<div class = "text_menu">
+			<p>昵称：</p>
+			<p>圆龄：</p>
+			<p>粉丝：</p>
+			<p>关注：</p>
+			</div>
+
+			<h2 class = "title_menu">我的分类</h2>
+			<div class = "text_menu">
+				{% for category in category_list%}
+				<p><a href = "category/{{category.get_absolute_str}}">{{category.name}}({{category.num_posts}})</a></p>
+				{% endfor %}
+			</div>
+
+		</div>	
+
+	</div>	
+
+
+
+</div>
+
+	{% endblock body %}
+</body>
+</html>
+
+
+
